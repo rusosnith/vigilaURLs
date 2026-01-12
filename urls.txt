@@ -1,35 +1,4 @@
-# Agrega las URLs que quieres monitorear, una por línea
-# Puedes usar filtros CSS o XPath para partes específicas
-
-# Ejemplo: Monitorear título de página
-# name: "Ejemplo - Título principal"
-# url: https://example.com
-# filter:
-#  - css: h1
-
-#---
-
-# Ejemplo: Monitorear precio de producto
-# name: "Producto X - Precio"
-# url: https://tienda.com/producto
-# filter:
-#  - css: .precio
-#  - strip
-
-#---
-
-# Ejemplo: Monitorear página completa
-#https://ejemplo.com/noticias
-
-#---
-
-# Más ejemplos:
-# - Puedes filtrar por CSS selector
-# - Puedes usar XPath
-# - Puedes eliminar HTML y quedarte solo con texto
-# - Puedes usar expresiones regulares
-
-
+kind: url
 name: "Kavak - Toyota Etios 2019-2022"
 url: https://www.kavak.com/ar/usados?maker=toyota&model=etios&year=2019,2020,2021,2022
 user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
