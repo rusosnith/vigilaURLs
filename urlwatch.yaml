@@ -12,7 +12,7 @@ report:
   telegram:
     enabled: true
     bot_token: ${TELEGRAM_BOT_TOKEN}
-    chat_id: ${TELEGRAM_CHAT_ID}
+    chat_id: "${TELEGRAM_CHAT_ID}"
 
 job_defaults:
   diff_tool: unified
