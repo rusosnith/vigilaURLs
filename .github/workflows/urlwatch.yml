@@ -2,9 +2,8 @@ name: URLWatch
 
 on:
   schedule:
-    # Ejecuta todos los días a las 9:00 AM UTC (6:00 AM Argentina)
     - cron: '0 9 * * *'
-  workflow_dispatch: # Permite ejecutar manualmente
+  workflow_dispatch:
 
 jobs:
   check-urls:
@@ -41,11 +40,11 @@ jobs:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: |
-        urlwatch --urls urls.txt --config urlwatch.yaml > output.txt 2>&1 || true
+        urlwatch --urls-file urls.txt --config urlwatch.yaml > output.txt 2>&1 || true
         cat output.txt
     
     - name: Save cache
-      uses: actions/cache/save@v3
+      uses: actions/cache@v3
       if: always()
       with:
         path: ~/.urlwatch
@@ -57,15 +56,13 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         if grep -q "CHANGED:\|NEW:" output.txt; then
-          CHANGES=$(cat output.txt | sed -n '/===/,/watched/p')
-          
+          CHANGES="$(cat output.txt | sed -n '/===/,/watched/p')"
           gh issue create \
             --title "🚗 Cambios detectados en Kavak - $(date +'%Y-%m-%d')" \
             --body "Se detectaron cambios en las URLs monitoreadas:
-
-\`\`\`
+```
 $CHANGES
-\`\`\`
+```
 
 Ver detalles completos en: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --label "urlwatch,cambios-detectados"
