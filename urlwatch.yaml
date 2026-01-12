@@ -26,11 +26,11 @@ report:
   #       username: tu-email@gmail.com
   #       password: $GMAIL_APP_PASSWORD
   
-  # Notificaciones por Telegram (recomendado)
-  # telegram:
-  #   enabled: true
-  #   bot_token: $TELEGRAM_BOT_TOKEN
-  #   chat_id: $TELEGRAM_CHAT_ID
+report:
+  telegram:
+    enabled: true
+    bot_token: $TELEGRAM_BOT_TOKEN
+    chat_id: $TELEGRAM_CHAT_ID
   
   # Crear issue en GitHub cuando hay cambios
   # stdout:

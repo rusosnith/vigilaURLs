@@ -35,8 +35,11 @@ jobs:
         restore-keys: urlwatch-cache-
         
     - name: Run urlwatch
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: urlwatch --urls urls.txt --config urlwatch.yaml
-      
+            
     - name: Commit changes if any
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
