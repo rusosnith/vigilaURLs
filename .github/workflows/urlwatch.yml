@@ -22,7 +22,7 @@ jobs:
     - name: Install urlwatch
       run: |
         pip install urlwatch
-        pip install chump  # Para notificaciones Pushover (opcional)
+        pip install chump
         
     - name: Create cache directory
       run: mkdir -p ~/.urlwatch
@@ -31,15 +31,48 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.urlwatch
-        key: urlwatch-cache-${{ github.run_id }}
-        restore-keys: urlwatch-cache-
+        key: urlwatch-cache-${{ github.sha }}
+        restore-keys: |
+          urlwatch-cache-
         
     - name: Run urlwatch
+      id: urlwatch
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-      run: urlwatch --urls urls.txt --config urlwatch.yaml
-            
+      run: |
+        urlwatch --urls urls.txt --config urlwatch.yaml > output.txt 2>&1 || true
+        cat output.txt
+    
+    - name: Save cache
+      uses: actions/cache/save@v3
+      if: always()
+      with:
+        path: ~/.urlwatch
+        key: urlwatch-cache-${{ github.sha }}
+        
+    - name: Check for changes and create issue
+      if: always()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        if grep -q "CHANGED:\|NEW:" output.txt; then
+          CHANGES=$(cat output.txt | sed -n '/===/,/watched/p')
+          
+          gh issue create \
+            --title "🚗 Cambios detectados en Kavak - $(date +'%Y-%m-%d')" \
+            --body "Se detectaron cambios en las URLs monitoreadas:
+
+\`\`\`
+$CHANGES
+\`\`\`
+
+Ver detalles completos en: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --label "urlwatch,cambios-detectados"
+        else
+          echo "No se detectaron cambios"
+        fi
+      
     - name: Commit changes if any
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
