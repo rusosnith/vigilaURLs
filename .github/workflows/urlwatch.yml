@@ -1,0 +1,46 @@
+name: URLWatch
+
+on:
+  schedule:
+    # Ejecuta todos los días a las 9:00 AM UTC (6:00 AM Argentina)
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Permite ejecutar manualmente
+
+jobs:
+  check-urls:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install urlwatch
+      run: |
+        pip install urlwatch
+        pip install chump  # Para notificaciones Pushover (opcional)
+        
+    - name: Create cache directory
+      run: mkdir -p ~/.urlwatch
+      
+    - name: Restore cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.urlwatch
+        key: urlwatch-cache-${{ github.run_id }}
+        restore-keys: urlwatch-cache-
+        
+    - name: Run urlwatch
+      run: urlwatch --urls urls.txt --config urlwatch.yaml
+      
+    - name: Commit changes if any
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add -A
+        git diff --quiet && git diff --staged --quiet || git commit -m "URLWatch: Update $(date +'%Y-%m-%d %H:%M')"
+        git push || true

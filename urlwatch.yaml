@@ -1,0 +1,42 @@
+# Configuración de urlwatch
+
+display:
+  # Mostrar solo cambios, no URLs sin cambios
+  unchanged: false
+  
+  # Formato de salida
+  error: true
+  
+report:
+  # Formato del reporte
+  text:
+    details: true
+    footer: true
+    
+  # Puedes habilitar notificaciones por email
+  # email:
+  #   enabled: true
+  #   from: tu-email@gmail.com
+  #   to: destino@gmail.com
+  #   smtp:
+  #     host: smtp.gmail.com
+  #     port: 587
+  #     starttls: true
+  #     auth:
+  #       username: tu-email@gmail.com
+  #       password: $GMAIL_APP_PASSWORD
+  
+  # Notificaciones por Telegram (recomendado)
+  # telegram:
+  #   enabled: true
+  #   bot_token: $TELEGRAM_BOT_TOKEN
+  #   chat_id: $TELEGRAM_CHAT_ID
+  
+  # Crear issue en GitHub cuando hay cambios
+  # stdout:
+  #   enabled: true
+
+job_defaults:
+  # Configuración por defecto para todos los jobs
+  diff_tool: unified
+  compared_versions: 2
